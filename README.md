@@ -16,7 +16,7 @@ A platform receives refuelling requests from drivers who keep following their ro
 | `data/results.zip` | `results/<seed>/`, the 980 result records, one JSON file per run or exact solution, and `machine.json` with the computer and the SHA-256 of the code files at the first run of the data seed |
 | `data/cplex-results.zip` | `cplex_results/`, the CPLEX logs (`.out`), integer solutions (`.sol`), linear relaxations (`.relax.sol`) and finishing times (`.done`) of the 140 integer programs, the run log `status.txt`, and `machine.txt`, a description of the computer that solved them |
 
-Each instance folder holds `requests.csv`, `vehicles.csv` with the tanker rates, `trajectory_nodes.csv` and `metadata.json`, the generator's record of its settings. The data seeds are 11223, 12345, 23456, 34567, 45678, 56789, 67890, 78901, 89012 and 90123. The instances were generated as described in the Methods of the article, which also give the zones and the path filter. The entries `files`, `matrix_mode` and `cplex_enabled` of `metadata.json` are generator options and outputs that the study does not use, and the files they name are not included.
+Each instance folder holds `requests.csv`, `vehicles.csv` with the tanker rates, `trajectory_nodes.csv` and `metadata.json`, the generator's record of its settings. The data seeds are 11223, 12345, 23456, 34567, 45678, 56789, 67890, 78901, 89012 and 90123. The instances were generated as described in the Methods of the article, which also give the zones and the path filter. The `files` entry of `metadata.json` also names `breakpoints.csv`, `segments.csv` and `trajectories.geojson`, generator outputs that the study does not use and that are not included; `matrix_mode` and `cplex_enabled` are generator options that the study does not use.
 
 ## Set-up
 
@@ -30,7 +30,7 @@ unzip data/cplex-results.zip
 python -m pip install -r code/requirements.txt matplotlib
 ```
 
-Python 3.11 or later with numpy, scipy and networkx is needed, and matplotlib for the figures. The result records were produced with Python 3.13.16, numpy 2.5.3, scipy 1.18.1 and networkx 3.6.1, as each `results/<seed>/machine.json` records. The figures of the paper use the Liberation Sans font; without it the scripts fall back to another sans-serif font. `campaign.py` needs Linux or macOS, because it forks its worker processes and compresses the programs with `bzip2`. The exact solutions use the IBM ILOG CPLEX 22.1.1 Interactive Optimizer, which is not needed to rebuild the tables and figures from the records.
+Python 3.11 or later with numpy, scipy and networkx is needed, and matplotlib for the figures. The heuristic runs used Python 3.13.16, numpy 2.5.3, scipy 1.18.1 and networkx 3.6.1, as each `results/<seed>/machine.json` records; the exact records were imported later, in an environment that is not recorded. The figures of the paper use the Liberation Sans font; without it the scripts fall back to another sans-serif font. `campaign.py` needs Linux or macOS, because it forks its worker processes and compresses the programs with `bzip2`. The exact solutions use the IBM ILOG CPLEX 22.1.1 Interactive Optimizer, which is not needed to rebuild the tables and figures from the records.
 
 ## Tests
 
@@ -66,13 +66,19 @@ export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 python campaign.py table  --seed 11223 --workers 2                         # travel table (2 GB) in ../tables
 python campaign.py run    --seed 11223 --worker 0 --workers 2 --results ../rerun &
 python campaign.py run    --seed 11223 --worker 1 --workers 2 --results ../rerun
+wait
 python campaign.py export --seed 11223                                     # integer programs in ../models
 ```
 
-`cplex/run.sh` solves every program placed in `cplex/inbox/` as `<name>.mps.bz2.part*` together with `<name>.ready`, whose first line is the md5 of the joined file, for example `cp ../models/NAME.mps.bz2 cplex/inbox/NAME.mps.bz2.part0 && md5 -q ../models/NAME.mps.bz2 > cplex/inbox/NAME.ready`. It writes the log and both solutions to `cplex/results/` and a description of the computer to `cplex/machine.txt`; the CPLEX settings are on one line of the script. Copy `cplex/results/*` and `cplex/machine.txt` to `../cplex_results/`, then
+`cplex/run.sh` solves every program placed in `cplex/inbox/` as `<name>.mps.bz2.part*` together with `<name>.ready`, whose first line is the md5 of the joined file, for example `mkdir -p cplex/inbox && cp ../models/NAME.mps.bz2 cplex/inbox/NAME.mps.bz2.part0 && md5 -q ../models/NAME.mps.bz2 > cplex/inbox/NAME.ready`. It writes the log and both solutions to `cplex/results/` and a description of the computer to `cplex/machine.txt`; the CPLEX settings are on one line of the script. Copy `cplex/results/*` and `cplex/machine.txt` to `../cplex_results/`, then
 
 ```bash
 python campaign.py import --seed 11223 --results ../rerun
+```
+
+`export` and `import` do not need CPLEX, so the exact records can also be rebuilt from the CPLEX output in `cplex_results/`. `summarize.py` needs the records of all ten data seeds: repeat the steps above for every seed, or copy the stored records of the other seeds first with `cp -Rn ../results/* ../rerun/`, then run
+
+```bash
 python analysis/summarize.py --results ../rerun
 ```
 
@@ -118,12 +124,12 @@ Every result record carries the independent validation of its plan, and the impo
 
 Scenarios: `base`; `sites` (meetings at local-access junctions); `deadline10` (urgent requests met within ten minutes); `penalty0.05` and `penalty0.02` (scaled penalties); `destination` and `earliest` (one meeting candidate per request, at the end of the path or at the earliest usable candidate).
 
-The result records were produced with earlier revisions of part of the code. Each `results/<seed>/machine.json` lists the SHA-256 of the code files present when the first run of that data seed started. Against this repository, `model/evaluator.py`, `runner.py`, `campaign.py` and `analysis/summarize.py` differ for every data seed, `model/cplex_io.py` for 11223, 12345 and 23456, `analysis/figure_schematic.py` for 78901, 89012 and 90123, and `analysis/figure_map.py` for 89012 and 90123, whose lists also include a helper for the bibliography of the manuscript that is not part of this repository. The exact records were imported after the heuristic runs, and the code version of that import is not recorded. Eleven recorded jobs of data seed 11223 were re-run with the code in this repository (PG, CI, SA and ALNS on base M02; ALNS, ALNS-F and ALNS-P on base M05; ALNS on local-site M02 and on deadline M05; WS+ALNS on the ×0.02 penalty scenario of M02; ALNS on base M10), and all eleven reproduced the stored objective and routes exactly. On another computer, re-runs of other ALNS jobs can end in plans of equal or slightly different cost; ALNS on base L06 of data seed 11223, for example, ended 0.0002% above its record with the same served requests.
+The result records were produced with earlier revisions of part of the code. Each `results/<seed>/machine.json` lists the SHA-256 of the code files present when the first run of that data seed started. Against this repository, `model/evaluator.py`, `runner.py`, `campaign.py` and `analysis/summarize.py` differ for every data seed, `model/cplex_io.py` for 11223, 12345 and 23456, `analysis/figure_schematic.py` for 78901, 89012 and 90123, and `analysis/figure_map.py` for 89012 and 90123, whose lists also include a helper for the bibliography of the manuscript that is not part of this repository. The exact records were imported after the heuristic runs, and the code version of that import is not recorded. Eleven recorded jobs of data seed 11223 were re-run with the code in this repository (PG, CI, SA and ALNS on base M02; ALNS, ALNS-F and ALNS-P on base M05; ALNS on local-site M02 and on deadline M05; WS+ALNS on the ×0.02 penalty scenario of M02; ALNS on base M10), and all eleven reproduced the stored objective and routes exactly. Re-running all 84 heuristic jobs of data seed 11223 on another computer (an Apple M5 under macOS) reproduced 79 records exactly. The others are ALNS runs on M10 and L06, which ended within 215 CU of their records (one of them serving one request fewer at almost the same cost), and CI on L06, whose plan differs in the last digit of one coordinate.
 
 ## Licences
 
 - Code (`code/`): MIT License, see `LICENSE`.
-- Data (`data/`): © OpenStreetMap contributors. The road network and everything built on it are available under the Open Data Commons Open Database License (ODbL) 1.0, see `LICENSE-DATA.md`.
+- Data (`data/`): road data © OpenStreetMap contributors. The road network and everything built on it are available under the Open Data Commons Open Database License (ODbL) 1.0, see `LICENSE-DATA.md`.
 
 ## Citation
 
