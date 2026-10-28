@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the article and this repository."
+title: "Routing fuel tankers to meet drivers along their routes on a city road network (code and data)"
+type: software
+authors:
+  - family-names: "Tajasob"
+    given-names: "Pouria"
+    affiliation: "Amirkabir University of Technology (Tehran Polytechnic)"
+    orcid: "https://orcid.org/0009-0002-3747-6232"
+    email: "Tajasob@aut.ac.ir"
+  - family-names: "Mirzapour Al-e-Hashem"
+    given-names: "S. Mohammad J."
+    affiliation: "Amirkabir University of Technology (Tehran Polytechnic)"
+    orcid: "https://orcid.org/0000-0002-3235-2698"
+    email: "Mirzapour@aut.ac.ir"
+version: "1.0.0"
+date-released: "2026-10-28"
+license: MIT
+keywords:
+  - vehicle routing
+  - moving customers
+  - meeting points
+  - mobile fuel delivery
+  - integer programming
+  - adaptive large neighbourhood search
