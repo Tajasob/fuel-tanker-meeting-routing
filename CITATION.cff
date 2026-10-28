@@ -14,6 +14,7 @@ authors:
     orcid: "https://orcid.org/0000-0002-3235-2698"
     email: "Mirzapour@aut.ac.ir"
 version: "1.0.0"
+doi: "10.5281/zenodo.23743781"
 date-released: "2026-10-28"
 repository-code: "https://github.com/Tajasob/fuel-tanker-meeting-routing"
 keywords:

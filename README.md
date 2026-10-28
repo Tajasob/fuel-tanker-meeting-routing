@@ -127,7 +127,7 @@ The result records were produced with earlier revisions of part of the code. Eac
 
 ## Citation
 
-Please cite the article above and this repository (`CITATION.cff`).
+Please cite the article above and this repository (`CITATION.cff`). Version 1.0.0 is archived in Zenodo, https://doi.org/10.5281/zenodo.23743781.
 
 ## Contact
 
