@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this code or data, please cite the article and this repository."
 title: "Routing fuel tankers to meet drivers along their routes on a city road network (code and data)"
-type: software
+type: dataset
 authors:
   - family-names: "Tajasob"
     given-names: "Pouria"
@@ -15,7 +15,7 @@ authors:
     email: "Mirzapour@aut.ac.ir"
 version: "1.0.0"
 date-released: "2026-10-28"
-license: MIT
+repository-code: "https://github.com/Tajasob/fuel-tanker-meeting-routing"
 keywords:
   - vehicle routing
   - moving customers

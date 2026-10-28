@@ -18,6 +18,7 @@ venv/
 /tables/
 /models/
 /logs/
+/rerun/
 
 /code/cplex/inbox/
 /code/cplex/results/
