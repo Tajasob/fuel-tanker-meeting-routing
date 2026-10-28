@@ -9,6 +9,10 @@ venv/
 .ipynb_checkpoints/
 .vscode/
 .idea/
+.env
+*.log
+nohup.out
+.coverage
 
 /real_city/
 /results/
