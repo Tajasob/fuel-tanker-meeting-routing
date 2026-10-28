@@ -30,7 +30,7 @@ unzip data/cplex-results.zip
 python -m pip install -r code/requirements.txt matplotlib
 ```
 
-Python 3.11 or later with numpy, scipy and networkx is needed, and matplotlib for the figures. The figures of the paper use the Liberation Sans font; without it the scripts fall back to another sans-serif font. `campaign.py` needs Linux or macOS, because it forks its worker processes and compresses the programs with `bzip2`. The exact solutions use the IBM ILOG CPLEX 22.1.1 Interactive Optimizer, which is not needed to rebuild the tables and figures from the records.
+Python 3.11 or later with numpy, scipy and networkx is needed, and matplotlib for the figures. The result records were produced with Python 3.13.16, numpy 2.5.3, scipy 1.18.1 and networkx 3.6.1, as each `results/<seed>/machine.json` records. The figures of the paper use the Liberation Sans font; without it the scripts fall back to another sans-serif font. `campaign.py` needs Linux or macOS, because it forks its worker processes and compresses the programs with `bzip2`. The exact solutions use the IBM ILOG CPLEX 22.1.1 Interactive Optimizer, which is not needed to rebuild the tables and figures from the records.
 
 ## Tests
 
